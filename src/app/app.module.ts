@@ -55,7 +55,7 @@ import { PreComponent } from './shared/pre/pre.component';
     PreComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({appId: 'Linux Store FrontEnd'}),
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,

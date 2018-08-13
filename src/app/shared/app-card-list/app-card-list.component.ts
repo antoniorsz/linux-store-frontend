@@ -29,7 +29,7 @@ export class AppCardListComponent implements OnInit, OnChanges {
   colWidth: number;
 
   appsToShow: App[];
-  calculatedNumCols: number;
+  calculatedNumCols = 5;
 
   @Output('showAppDetails')
   showAppDetails: EventEmitter<App> = new EventEmitter<App>();
@@ -64,7 +64,9 @@ export class AppCardListComponent implements OnInit, OnChanges {
     if (!this.cols) {
       const componentWidth: number = this.elementView.nativeElement.clientWidth;
       // console.log("AppCardList componentWidth:" + componentWidth);
-      this.calculatedNumCols = Math.max(this.minCols, Math.floor(componentWidth / this.colWidth));
+      if (componentWidth !== null && componentWidth !== undefined) {
+        this.calculatedNumCols = Math.max(this.minCols, Math.floor(componentWidth / this.colWidth));
+      }
     } else {
       this.calculatedNumCols = this.cols;
     }

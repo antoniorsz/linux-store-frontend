@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 
 import { GoogleAnalyticsEventsService } from './google-analytics-events.service';
+import { MetaService } from './meta.service';
 
 declare let ga: Function;
 
@@ -15,14 +16,15 @@ export class AppComponent {
 
   constructor(
     public router: Router,
-    private googleAnalyticsEventsService: GoogleAnalyticsEventsService
+    private googleAnalyticsEventsService: GoogleAnalyticsEventsService,
+    private metaService: MetaService,
   ) {
-
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.googleAnalyticsEventsService.emitPageView(event.urlAfterRedirects);
       }
     });
+    this.metaService.addDefaultTags();
   }
 
   onSearch(searchTerm: string) {
@@ -32,5 +34,4 @@ export class AppComponent {
       this.router.navigate(['apps/search', searchTerm]);
     }
   }
-
 }

@@ -1,20 +1,21 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
-import { Title, Meta } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 
 import { App } from '../../shared/app.model';
 import { Review } from '../../shared/review.model';
 import { LinuxStoreApiService } from '../../linux-store-api.service';
 import { GoogleAnalyticsEventsService } from '../../google-analytics-events.service';
+import { MetaService } from '../../meta.service';
 
 @Component({
   selector: 'store-app-details',
   templateUrl: './app-details.component.html',
   styleUrls: ['./app-details.component.scss']
 })
-export class AppDetailsComponent implements OnInit {
+export class AppDetailsComponent implements OnInit, OnDestroy {
 
   @Input() app: App;
 
@@ -32,21 +33,18 @@ export class AppDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private titleService: Title,
-    private metaService: Meta) {
+    private metaService: MetaService) {
 
   }
 
   setTitleAndMetaTags() {
-
     if (this.app) {
+      console.log(this.app);
       this.titleService.setTitle(this.app.name + ' | Apps on Flathub');
-      this.metaService.updateTag({ name: 'description', content: this.app.summary });
-      this.metaService.updateTag({ name: 'keywords', content: 'install,flatpak,' + this.app.name + ',linux,ubuntu,fedora' });
-    }
-    else {
+      this.metaService.addAppTags(this.app);
+    } else {
       this.titleService.setTitle('App not found | Apps on Flathub');
-      this.metaService.updateTag({ name: 'description', content: 'App not found' });
-      this.metaService.updateTag({ name: 'keywords', content: '' });
+      this.metaService.addAppTags();
     }
 
   }
@@ -89,6 +87,12 @@ export class AppDetailsComponent implements OnInit {
   onInstall(app: App) {
     // Track instal event
     this.googleAnalyticsEventsService.emitEvent('App', 'Install', app.flatpakAppId);
+  }
+
+  ngOnDestroy(): void {
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
+    this.metaService.removeAppTags();
   }
 
 }

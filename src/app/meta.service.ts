@@ -45,13 +45,17 @@ export class MetaService {
     },
     { name: 'twitter:image', content: 'https://flathub.org/assets/themes/flathub/flathub-logo-toolbar.svg' },
   ];
+  lastRoute: String = undefined;
 
   constructor(private meta: Meta, private router: Router, private location: Location) {
     router.events.subscribe((val) => {
-      this.updateTag(
-        { property: 'og:url', content: 'https://flathub.org' + this.location.path() },
-        'property="og:url"',
-      );
+      if (this.lastRoute !== this.location.path()) {
+        this.lastRoute = this.location.path();
+        this.updateTag(
+          { property: 'og:url', content: 'https://flathub.org' + this.location.path() },
+          'property="og:url"',
+        );
+      }
     });
   }
 
@@ -59,46 +63,46 @@ export class MetaService {
     return this.meta.addTags(tags, forceCreation);
   }
 
-  public addTag(tag: MetaDefinition, forceCreation?: boolean) {
-    return this.meta.addTag(tag, forceCreation);
-  }
 
   public addDefaultTags() {
     return this.addTags(this.defaultTags);
   }
 
   public updateTag(tag: MetaDefinition, selector?: string) {
-    // if (this.meta.getTag(selector)) {
+    if (this.meta.getTag(selector)) {
       this.meta.updateTag(tag, selector);
-    // } else {
-    //   this.addTag(tag);
-    // }
+    } else {
+      this.meta.addTag(tag);
+    }
   }
 
   public addAppTags(app?: App) {
-    console.log(app);
     if (app) {
       this.updateTag({ name: 'description', content: this.stripHTMLTags(app.description) }, 'name="description"');
       this.updateTag(
         { name: 'keywords', content: 'install,flatpak,' + app.name + ',linux,ubuntu,fedora' },
-        'name="keywords"'
+        'name="keywords"',
       );
       this.updateTag({ property: 'og:title', content: app.name + ' on Flathub' }, 'property="og:title"');
       this.updateTag(
         { property: 'og:image', content: 'https://flathub.org' + app.iconDesktopUrl },
-        'property="og:image"'
+        'property="og:image"',
       );
       this.updateTag(
         { property: 'og:description', content: this.stripHTMLTags(app.description) },
-        'property="og:description"'
+        'property="og:description"',
       );
       this.updateTag({ name: 'twitter:title', content: app.name + ' on Flathub' }, 'name="twitter:title"');
       this.updateTag(
         { name: 'twitter:image', content: 'https://flathub.org' + app.iconDesktopUrl },
-        'name="twitter:image"'
+        'name="twitter:image"',
+      );
+      this.updateTag(
+        { name: 'twitter:description', content: this.stripHTMLTags(app.description) },
+        'name="twitter:description"',
       );
     } else {
-      this.updateTag({ name: 'description', content: 'App not found' }, 'name="description');
+      this.updateTag({ name: 'description', content: 'App not found' }, 'name="description"');
     }
   }
 
@@ -110,19 +114,20 @@ export class MetaService {
         content:
           'install, flatpak, applications, games, linux, ubuntu, fedora, GIMP, Spotify, STEAM, VLC, Skype, Slack',
       },
-      'name="keywords"'
+      'name="keywords"',
     );
     this.updateTag({ property: 'og:title', content: 'Flathub' }, 'property="og:title"');
     this.updateTag(
       { property: 'og:image', content: 'https://flathub.org/assets/themes/flathub/flathub-logo-toolbar.svg' },
-      'property="og:image"'
+      'property="og:image"',
     );
     this.updateTag({ property: 'og:description', content: this.defaultDescription }, 'property="og:description"');
     this.updateTag({ name: 'twitter:title', content: 'Flathub' }, 'name="twitter:title"');
     this.updateTag(
       { name: 'twitter:image', content: 'https://flathub.org/assets/themes/flathub/flathub-logo-toolbar.svg' },
-      'name="twitter:image"'
+      'name="twitter:image"',
     );
+    this.updateTag({ name: 'twitter:description', content: this.defaultDescription }, 'name="twitter:description"');
   }
 
   public stripHTMLTags(input: String) {

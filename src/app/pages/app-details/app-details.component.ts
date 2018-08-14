@@ -9,6 +9,7 @@ import { Review } from '../../shared/review.model';
 import { LinuxStoreApiService } from '../../linux-store-api.service';
 import { GoogleAnalyticsEventsService } from '../../google-analytics-events.service';
 import { MetaService } from '../../meta.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'store-app-details',
@@ -35,7 +36,7 @@ export class AppDetailsComponent implements OnInit, OnDestroy {
     private titleService: Title,
     private metaService: MetaService) {
 
-  }
+    }
 
   setTitleAndMetaTags() {
     if (this.app) {
@@ -46,17 +47,16 @@ export class AppDetailsComponent implements OnInit, OnDestroy {
       this.titleService.setTitle('App not found | Apps on Flathub');
       this.metaService.addAppTags();
     }
-
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(
-      params => {
+    this.route.paramMap
+      .pipe(first())
+      .toPromise()
+      .then((params) => {
         this.paramAppId = params.get('appId');
         this.getApp(this.paramAppId);
-      }
-    );
-
+      });
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         return;
@@ -66,14 +66,18 @@ export class AppDetailsComponent implements OnInit, OnDestroy {
   }
 
   getApp(id: string): void {
-    this.linuxStoreApiService.getApp(id)
-      .subscribe(app => { this.app = app; this.setTitleAndMetaTags(); });
+    this.linuxStoreApiService.getApp(id).subscribe((app) => {
+      this.app = app;
+      if (app) {
+        this.setTitleAndMetaTags();
+      }
+    });
   }
 
   getReviews(id: string): void {
     const app_id: string = id.concat('.desktop');
     this.linuxStoreApiService.getReviews(app_id)
-      .subscribe(reviews => { this.reviews = reviews; });
+    .subscribe(reviews => { this.reviews = reviews; });
   }
 
   onSelect(review: Review): void {

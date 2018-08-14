@@ -36,25 +36,11 @@ app.set('views', join(DIST_FOLDER, 'browser'));
 // Example Express Rest API endpoints
 app.get('/api/**', (req, res) => {
   const url = 'http://45.55.104.129' + req.url;
-  let r = null;
-  if (req.method === 'POST') {
-    r = request.post({ uri: url, json: req.body });
-  } else {
-    r = request(url);
-  }
-  console.log(url);
-  req.pipe(r).pipe(res);
+  request({url: url, method: req.query.method}).pipe(res);
 });
 app.get('/repo/**', (req, res) => {
   const url = 'http://45.55.104.129' + req.url;
-  let r = null;
-  if (req.method === 'POST') {
-    r = request.post({ uri: url, json: req.body });
-  } else {
-    r = request(url);
-  }
-  console.log(url);
-  req.pipe(r).pipe(res);
+  request({url: url, method: req.query.method}).pipe(res);
 });
 
 // Server static files from /browser

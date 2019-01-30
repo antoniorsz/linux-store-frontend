@@ -1,11 +1,12 @@
-import { ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './pages/home/home.component';
 import { AboutComponent } from './pages/about/about.component';
 import { TermsComponent } from './pages/terms/terms.component';
 import { PrivacyComponent } from './pages/privacy/privacy.component';
-import { CodeOfConductComponent} from './pages/code-of-conduct/code-of-conduct.component';
+import { BadgesComponent } from './pages/badges/badges.component';
+import { CodeOfConductComponent } from './pages/code-of-conduct/code-of-conduct.component';
 import { AppListComponent } from './pages/app-list/app-list.component';
 import { AppDetailsComponent } from './pages/app-details/app-details.component';
 
@@ -29,6 +30,10 @@ const appRoutes: Routes = [
   {
     path: 'conduct',
     component: CodeOfConductComponent
+  },
+  {
+    path: 'badges',
+    component: BadgesComponent
   },
   {
     path: 'apps',
@@ -56,5 +61,22 @@ const appRoutes: Routes = [
     pathMatch: 'full'
   }
 ];
+@NgModule({
+  imports: [
+    RouterModule.forRoot(
+      appRoutes,
+      {
+        enableTracing: false, // <-- debugging purposes only
+        scrollPositionRestoration: 'enabled',
+        //anchorScrolling: 'enabled',
+        scrollOffset: [0, 0] // [x, y]
+      }
+    )
+  ],
+  exports: [
+    RouterModule
+  ],
+  providers: []
+})
+export class AppRoutingModule { }
 
-export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);

@@ -8,13 +8,15 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { LinuxStoreAngularMaterialModule } from './linux-store-angular-material/linux-store-angular-material.module';
 import { GalleryModule } from '@ngx-gallery/core';
 
-import { routing } from './app.routing';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { AppListComponent } from './pages/app-list/app-list.component';
 import { AppDetailsComponent } from './pages/app-details/app-details.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { LinuxStoreApiService } from './linux-store-api.service';
 import { GoogleAnalyticsEventsService } from './google-analytics-events.service';
+import { SeoService } from './seo.service';
 import { AppSidebarComponent } from './shared/app-sidebar/app-sidebar.component';
 import { AppDetailsMainComponent } from './shared/app-details-main/app-details-main.component';
 import { AppDetailsDescriptionComponent } from './shared/app-details-description/app-details-description.component';
@@ -30,6 +32,7 @@ import { TermsComponent } from './pages/terms/terms.component';
 import { PrivacyComponent } from './pages/privacy/privacy.component';
 import { CodeOfConductComponent } from './pages/code-of-conduct/code-of-conduct.component';
 import { PreComponent } from './shared/pre/pre.component';
+import { BadgesComponent } from './pages/badges/badges.component';
 
 
 @NgModule({
@@ -52,7 +55,8 @@ import { PreComponent } from './shared/pre/pre.component';
     TermsComponent,
     PrivacyComponent,
     CodeOfConductComponent,
-    PreComponent
+    PreComponent,
+    BadgesComponent
   ],
   imports: [
     BrowserModule,
@@ -62,12 +66,13 @@ import { PreComponent } from './shared/pre/pre.component';
     GalleryModule.forRoot(),
     FlexLayoutModule,
     LinuxStoreAngularMaterialModule,
-    routing
+    AppRoutingModule
   ],
   providers: [
     Title,
     LinuxStoreApiService,
-    GoogleAnalyticsEventsService
+    GoogleAnalyticsEventsService,
+    SeoService
   ],
   bootstrap: [AppComponent]
 })
